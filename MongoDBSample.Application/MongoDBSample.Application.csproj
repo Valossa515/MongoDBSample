@@ -1,0 +1,18 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\MongoDBSample.Application.Abstractions\MongoDBSample.Application.Abstractions.csproj" />
+    <ProjectReference Include="..\MongoDBSample.Domain.Model\MongoDBSample.Domain.Model.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Books\Validator\" />
+  </ItemGroup>
+
+</Project>

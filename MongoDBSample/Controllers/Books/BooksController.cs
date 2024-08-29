@@ -1,0 +1,67 @@
+﻿using MediatR;
+using Microsoft.AspNetCore.Mvc;
+using MongoDBSample.Application.Abstractions.Data;
+using MongoDBSample.Application.Books.Commands;
+using MongoDBSample.Application.Books.Data;
+using MongoDBSample.Application.Books.Queries;
+
+namespace MongoDBSample.API.Controllers.Books
+{
+    [ApiController]
+    [Route("books")]
+    public class BooksController(
+        IMediator mediator)
+                : ControllerBase
+    {
+        private readonly IMediator mediator = mediator;
+
+        /// <summary>
+        /// Listar books
+        /// </summary>
+        /// <param name="id">ID do book (opcional)</param>
+        /// <returns>Lista de books</returns>
+        [HttpGet]
+        [ProducesResponseType(typeof(IEnumerable<BookResponse>), (int)ResponseStatus.Ok)]
+        public async Task<IActionResult> ListarBooks(
+            [FromQuery] string? id)
+        {
+            ListarBooksQuery query = new()
+            {
+                Id = id
+            };
+
+            Response<IEnumerable<BookResponse>> result = await mediator.Send(query);
+            return Ok(result);
+        }
+
+        /// <summary>
+        /// Cadastrar um book
+        /// </summary>
+        /// <param name="request">Request</param>
+        /// <returns></returns>
+        [HttpPost("cadastro-book")]
+        [ProducesResponseType(typeof(Response), (int)ResponseStatus.Ok)]
+        [ProducesResponseType(typeof(Response), (int)ResponseStatus.BadRequest)]
+        public async Task<IActionResult> CadastrarBook(
+            [FromBody] CadastrarBookCommand request)
+        {
+            return Ok(await mediator.Send(request));
+        }
+
+        /// <summary>
+        /// Atualizar um book
+        /// </summary>
+        /// <param name="request">Request de atualização</param>
+        /// <returns></returns>
+        [HttpPut("{id}")]
+        [ProducesResponseType(typeof(Response<CadastrarBookResponse>), (int)ResponseStatus.Ok)]
+        [ProducesResponseType(typeof(Response<CadastrarBookResponse>), (int)ResponseStatus.BadRequest)]
+        public async Task<IActionResult> AtualizarBook(
+            [FromRoute] string id,
+            [FromBody] AtualizarBookCommand request)
+        {
+            request.Id = id;
+            return Ok(await mediator.Send(request));
+        }
+    }
+}
