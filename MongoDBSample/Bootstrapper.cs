@@ -49,6 +49,7 @@ namespace MongoDBSample.API
             //Services
             services.AddScoped<IRequestHandler<CadastrarBookCommand, Response<CadastrarBookResponse>>, CadastrarBookService>();
             services.AddScoped<IRequestHandler<AtualizarBookCommand, Response<CadastrarBookResponse>>, AtualizarBookService>();
+            services.AddScoped<IRequestHandler<RemoverBookCommand, Response<CadastrarBookResponse>>, RemoverBookService>();
 
             //Repositories
             services.AddScoped<IRequestHandler<ListarBooksQuery, Response<IEnumerable<BookResponse>>>, ListarBooksRepository>();

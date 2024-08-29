@@ -63,5 +63,24 @@ namespace MongoDBSample.API.Controllers.Books
             request.Id = id;
             return Ok(await mediator.Send(request));
         }
+
+        /// <summary>
+        /// Remover um livro
+        /// </summary>
+        /// <param name="id">ID do livro</param>
+        /// <returns></returns>
+        [HttpDelete("{id}")]
+        [ProducesResponseType(typeof(Response<CadastrarBookResponse>), (int)ResponseStatus.Ok)]
+        [ProducesResponseType(typeof(Response<CadastrarBookResponse>), (int)ResponseStatus.BadRequest)]
+        public async Task<IActionResult> RemoverBook(
+            [FromRoute] string id)
+        {
+            RemoverBookCommand command = new()
+            {
+                Id = id
+            };
+
+            return Ok(await mediator.Send(command));
+        }
     }
 }
