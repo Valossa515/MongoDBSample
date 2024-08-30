@@ -147,5 +147,25 @@ namespace MongoDBSample.API.UnitTests.Application.Books.Validator
             // Assert
             actual.Should().Contain("Date cannot be in the past");
         }
+
+        [Fact(DisplayName = "For Romance category, the price must be greater than 30.00")]
+        public void CadastrarBookValidator_PrecoRomanceMaior30_ReturnsValidationResult()
+        {
+            //Arrange
+            CadastrarBookCommand command = new()
+            {
+                Author = "Author",
+                Category = "Romance",
+                Price = 10,
+                Date = DateTime.Now
+            };
+
+            //Act
+            ValidationResult result = validator.Validate(command);
+            string actual = result.Errors[0].ErrorMessage;
+
+            // Assert
+            actual.Should().Contain("For Romance category, the price must be greater than 30.00");
+        }
     }
 }
