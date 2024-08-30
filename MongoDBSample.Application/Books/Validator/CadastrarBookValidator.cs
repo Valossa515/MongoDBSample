@@ -8,7 +8,7 @@ namespace MongoDBSample.Application.Books.Validator
     {
         public CadastrarBookValidator()
         {
-            ClassLevelCascadeMode = CascadeMode.Stop;
+            ClassLevelCascadeMode = CascadeMode.Continue;
 
             RuleFor(x => x.Author)
                 .NotEmpty()

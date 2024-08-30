@@ -1,11 +1,12 @@
 ﻿using MediatR;
 using Microsoft.Extensions.Options;
+using MongoDBSample.API.Behaviors;
+using MongoDBSample.API.Exceptions;
 using MongoDBSample.Application.Abstractions.Data;
 using MongoDBSample.Application.Abstractions.Handlers;
 using MongoDBSample.Application.Books.Commands;
 using MongoDBSample.Application.Books.Data;
 using MongoDBSample.Application.Books.Queries;
-using MongoDBSample.Application.Books.Validator;
 using MongoDBSample.Domain.Model.Books;
 using MongoDBSample.Domain.Model.UnitOfWork;
 using MongoDBSample.Domain.Services.Books;
@@ -47,9 +48,10 @@ namespace MongoDBSample.API
                 cfg.RegisterServicesFromAssembly(typeof(QueryHandler<,>).Assembly);
                 cfg.RegisterServicesFromAssembly(typeof(ListarBooksPorIdRepository).Assembly);
                 cfg.RegisterServicesFromAssembly(typeof(ListarBooksRepository).Assembly);
-                cfg.RegisterServicesFromAssembly(typeof(CadastrarBookValidator).Assembly);
                 cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly());
             });
+
+            services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
 
             //Services
             services.AddScoped<IRequestHandler<CadastrarBookCommand, Response<CadastrarBookResponse>>, CadastrarBookService>();
@@ -73,6 +75,8 @@ namespace MongoDBSample.API
 
         public static WebApplication UseCustomMiddleware(this WebApplication app)
         {
+            app.UseMiddleware<ExceptionHandlingMiddleware>();
+
             if (app.Environment.IsDevelopment())
             {
                 app.UseSwagger();
