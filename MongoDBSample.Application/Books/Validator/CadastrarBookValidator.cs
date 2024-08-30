@@ -12,15 +12,19 @@ namespace MongoDBSample.Application.Books.Validator
 
             RuleFor(x => x.Author)
                 .NotEmpty()
+                .WithMessage("Author is required")
                 .MaximumLength(50)
-                .WithMessage("Author is required and with maximum of 50 characters");
+                .WithMessage("Author MaximumLength is 50 characters");
 
             RuleFor(x => x.Category)
                 .NotEmpty()
-                .MaximumLength(200)
-                .WithMessage("Category is required and with maximum of 200 characters");
+                .WithMessage("Category is required")
+                .MaximumLength(50)
+                .WithMessage("Category MaximumLength is 50 characters");
 
             RuleFor(x => x.Price)
+                .NotEmpty()
+                .WithMessage("Price is required")
                 .GreaterThan(0)
                 .WithMessage("Price must be greater than 0");
 

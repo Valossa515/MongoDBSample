@@ -13,6 +13,13 @@ namespace MongoDBSample.Domain.Services.Books
     {
         private readonly IUnitOfWork unitOfWork = unitOfWork;
 
+        public async Task<Response<CadastrarBookResponse>> PublicExecute(
+           RemoverBookCommand request,
+           CancellationToken cancellationToken)
+        {
+            return await Execute(request, cancellationToken);
+        }
+
         protected async override Task<Response<CadastrarBookResponse>> Execute(
             RemoverBookCommand request,
             CancellationToken cancellationToken)
@@ -23,7 +30,7 @@ namespace MongoDBSample.Domain.Services.Books
 
             if (book == null)
             {
-                return MapearResponse(false, "Livro não encontrado");
+                return MapearResponse(false, "Book não encontrado");
             }
 
             unitOfWork.Remove(book);
@@ -32,10 +39,10 @@ namespace MongoDBSample.Domain.Services.Books
 
             if (commitStatus == StatusCommit.Sucesso)
             {
-                return MapearResponse(true, "Livro removido com sucesso");
+                return MapearResponse(true, "Book removido com sucesso");
             }
 
-            return MapearResponse(false, "Falha ao remover o livro");
+            return MapearResponse(false, "Falha ao remover o book");
         }
 
         private Response<CadastrarBookResponse> MapearResponse(

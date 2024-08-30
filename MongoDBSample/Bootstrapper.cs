@@ -39,7 +39,6 @@ namespace MongoDBSample.API
 
             return services;
         }
-
         public static IServiceCollection AddMediatRServices(this IServiceCollection services)
         {
             services.AddMediatR(cfg =>

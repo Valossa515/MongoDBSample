@@ -13,6 +13,13 @@ namespace MongoDBSample.Domain.Services.Books
     {
         private readonly IUnitOfWork unitOfWork = unitOfWork;
 
+        public async Task<Response<CadastrarBookResponse>> PublicExecute(
+           AtualizarBookCommand request,
+           CancellationToken cancellationToken)
+        {
+            return await Execute(request, cancellationToken);
+        }
+
         protected async override Task<Response<CadastrarBookResponse>> Execute(
             AtualizarBookCommand request,
             CancellationToken cancellationToken)
