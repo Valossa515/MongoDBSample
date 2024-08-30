@@ -1,29 +1,24 @@
-﻿using MongoDB.Bson;
-using MongoDB.Driver;
+﻿using MongoDB.Driver;
 using MongoDBSample.Application.Abstractions.Handlers;
 using MongoDBSample.Application.Books.Data;
 using MongoDBSample.Application.Books.Queries;
 using MongoDBSample.Domain.Model.Books;
 using MongoDBSample.Infrastructure.Respostories.Context;
 
-namespace MongoDBSample.Infrastructure.Respositories.Books
+namespace MongoDBSample.Infrastructure.Respostories.Books
 {
-    public class ListarBooksRepository
-        : QueryHandler<ListarBooksQuery, IEnumerable<BookResponse>>
+    public class ListarBooksRepository(
+        MongoDBContext context)
+                : QueryHandler<ListarBooksQuery, IEnumerable<BookResponse>>
     {
-        private readonly MongoDBContext context;
-
-        public ListarBooksRepository(
-            MongoDBContext context)
-        {
-            this.context = context;
-        }
+        private readonly MongoDBContext context = context;
 
         protected async override Task<IEnumerable<BookResponse>> Execute(
             ListarBooksQuery request,
             CancellationToken cancellationToken)
         {
-            IEnumerable<Book> books = await ListarBooksAsync(request, cancellationToken);
+            IEnumerable<Book> books = await ListarTodosBooksAsync(cancellationToken);
+
             return books.Select(b => new BookResponse
             {
                 Id = b.Id.ToString(),
@@ -34,24 +29,13 @@ namespace MongoDBSample.Infrastructure.Respositories.Books
             }).ToList();
         }
 
-        private async Task<IEnumerable<Book>> ListarBooksAsync(
-             ListarBooksQuery request,
-             CancellationToken cancellationToken)
+        private async Task<IEnumerable<Book>> ListarTodosBooksAsync(
+            CancellationToken cancellationToken)
         {
-            if (string.IsNullOrEmpty(request.Id))
-            {
-                return [];
-            }
+            IMongoCollection<Book> collection = context.GetCollection<Book>("Book");
 
-            if (ObjectId.TryParse(request.Id, out ObjectId objectId))
-            {
-                FilterDefinition<Book> filter = Builders<Book>.Filter.Eq("_id", objectId);
-                IMongoCollection<Book> collection = context.GetCollection<Book>("Book");
-
-                return await collection.Find(filter).ToListAsync(cancellationToken);
-            }
-
-            return [];
+            // Buscando todos os documentos da coleção
+            return await collection.Find(FilterDefinition<Book>.Empty).ToListAsync(cancellationToken);
         }
     }
 }

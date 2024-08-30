@@ -7,12 +7,15 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\MongoDBSample.Application.Abstractions\MongoDBSample.Application.Abstractions.csproj" />
-    <ProjectReference Include="..\MongoDBSample.Domain.Model\MongoDBSample.Domain.Model.csproj" />
+    <PackageReference Include="FluentValidation" Version="11.9.2" />
+    <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="11.9.2" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Core" Version="2.2.5" />
+    <PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Books\Validator\" />
+    <ProjectReference Include="..\MongoDBSample.Application.Abstractions\MongoDBSample.Application.Abstractions.csproj" />
+    <ProjectReference Include="..\MongoDBSample.Domain.Model\MongoDBSample.Domain.Model.csproj" />
   </ItemGroup>
 
 </Project>

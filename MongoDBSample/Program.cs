@@ -1,4 +1,5 @@
 using MongoDBSample.API;
+using MongoDBSample.Application;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
@@ -7,6 +8,7 @@ builder.Services.AddMongoDBContext(builder.Configuration);
 builder.Services.AddMediatRServices();
 builder.Services.AddCustomControllers();
 builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddApplicationValidators();
 builder.Services.AddSwaggerGen();
 
 WebApplication app = builder.Build();

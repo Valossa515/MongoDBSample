@@ -5,11 +5,14 @@ using MongoDBSample.Application.Abstractions.Handlers;
 using MongoDBSample.Application.Books.Commands;
 using MongoDBSample.Application.Books.Data;
 using MongoDBSample.Application.Books.Queries;
+using MongoDBSample.Application.Books.Validator;
 using MongoDBSample.Domain.Model.Books;
 using MongoDBSample.Domain.Model.UnitOfWork;
 using MongoDBSample.Domain.Services.Books;
 using MongoDBSample.Infrastructure.Respositories.Books;
+using MongoDBSample.Infrastructure.Respostories.Books;
 using MongoDBSample.Infrastructure.Respostories.Context;
+using System.Reflection;
 
 namespace MongoDBSample.API
 {
@@ -43,7 +46,10 @@ namespace MongoDBSample.API
             {
                 cfg.RegisterServicesFromAssembly(typeof(CommandHandler<CadastrarBookCommand, CadastrarBookResponse>).Assembly);
                 cfg.RegisterServicesFromAssembly(typeof(QueryHandler<,>).Assembly);
+                cfg.RegisterServicesFromAssembly(typeof(ListarBooksPorIdRepository).Assembly);
                 cfg.RegisterServicesFromAssembly(typeof(ListarBooksRepository).Assembly);
+                cfg.RegisterServicesFromAssembly(typeof(CadastrarBookValidator).Assembly);
+                cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly());
             });
 
             //Services
@@ -52,6 +58,7 @@ namespace MongoDBSample.API
             services.AddScoped<IRequestHandler<RemoverBookCommand, Response<CadastrarBookResponse>>, RemoverBookService>();
 
             //Repositories
+            services.AddScoped<IRequestHandler<ListarBooksPorIdQuery, Response<BookResponse>>, ListarBooksPorIdRepository>();
             services.AddScoped<IRequestHandler<ListarBooksQuery, Response<IEnumerable<BookResponse>>>, ListarBooksRepository>();
 
             return services;

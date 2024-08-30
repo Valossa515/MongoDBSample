@@ -18,18 +18,31 @@ namespace MongoDBSample.API.Controllers.Books
         /// <summary>
         /// Listar books
         /// </summary>
-        /// <param name="id">ID do book (opcional)</param>
+        /// <param name="id">ID do book</param>
         /// <returns>Lista de books</returns>
-        [HttpGet]
-        [ProducesResponseType(typeof(IEnumerable<BookResponse>), (int)ResponseStatus.Ok)]
+        [HttpGet("{id}")]
+        [ProducesResponseType(typeof(BookResponse), (int)ResponseStatus.Ok)]
         public async Task<IActionResult> ListarBooks(
-            [FromQuery] string? id)
+            [FromRoute] string? id)
         {
-            ListarBooksQuery query = new()
+            ListarBooksPorIdQuery query = new()
             {
                 Id = id
             };
 
+            Response<BookResponse> result = await mediator.Send(query);
+            return Ok(result);
+        }
+
+        /// <summary>
+        /// Listar todos os books
+        /// </summary>
+        /// <returns>Lista de todos os books</returns>
+        [HttpGet]
+        [ProducesResponseType(typeof(IEnumerable<BookResponse>), (int)ResponseStatus.Ok)]
+        public async Task<IActionResult> ListarTodosBooks()
+        {
+            ListarBooksQuery query = new();
             Response<IEnumerable<BookResponse>> result = await mediator.Send(query);
             return Ok(result);
         }
@@ -39,7 +52,7 @@ namespace MongoDBSample.API.Controllers.Books
         /// </summary>
         /// <param name="request">Request</param>
         /// <returns></returns>
-        [HttpPost("cadastro-book")]
+        [HttpPost("cadastro")]
         [ProducesResponseType(typeof(Response), (int)ResponseStatus.Ok)]
         [ProducesResponseType(typeof(Response), (int)ResponseStatus.BadRequest)]
         public async Task<IActionResult> CadastrarBook(
