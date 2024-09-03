@@ -19,7 +19,7 @@ namespace MongoDBSample.API.UnitTests.Services
             AtualizarBookCommand request = new()
             {
                 Id = "1",
-                Name = "Book 1",
+                BookName = "Book 1",
                 Price = 10,
                 Category = "Category 1",
                 Author = "Author 1",
@@ -63,7 +63,7 @@ namespace MongoDBSample.API.UnitTests.Services
             AtualizarBookCommand request = new()
             {
                 Id = "1",
-                Name = "Book 1",
+                BookName = "Book 1",
                 Price = 10,
                 Category = "Category 1",
                 Author = "Author 1",
@@ -96,7 +96,7 @@ namespace MongoDBSample.API.UnitTests.Services
             AtualizarBookCommand request = new()
             {
                 Id = "1",
-                Name = "Book 1",
+                BookName = "Book 1",
                 Price = 10,
                 Category = "Category 1",
                 Author = "Author 1",

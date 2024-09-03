@@ -31,7 +31,7 @@ namespace MongoDBSample.Domain.Services.Books
                 return MapearResponse(false, "Book não encontrado", request.Id);
             }
 
-            book.AtualizarDados(request.Name, request.Price, request.Category, request.Author, request.Date);
+            book.AtualizarDados(request.BookName, request.Price, request.Category, request.Author, request.Date);
 
             await unitOfWork.UpdateAsync(book);
 

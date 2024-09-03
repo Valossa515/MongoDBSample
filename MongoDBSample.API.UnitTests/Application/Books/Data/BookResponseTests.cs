@@ -20,7 +20,7 @@ namespace MongoDBSample.API.UnitTests.Application.Books.Data
             BookResponse actual = new()
             {
                 Id = id,
-                Name = name,
+                BookName = name,
                 Author = author,
                 Category = category,
                 Price = price,
@@ -29,7 +29,7 @@ namespace MongoDBSample.API.UnitTests.Application.Books.Data
 
             //Assert
             actual.Id.Should().Be(id);
-            actual.Name.Should().Be(name);
+            actual.BookName.Should().Be(name);
             actual.Author.Should().Be(author);
             actual.Category.Should().Be(category);
             actual.Price.Should().Be(price);

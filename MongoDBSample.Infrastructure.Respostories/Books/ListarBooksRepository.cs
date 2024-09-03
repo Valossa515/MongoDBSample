@@ -22,7 +22,7 @@ namespace MongoDBSample.Infrastructure.Respostories.Books
             return books.Select(b => new BookResponse
             {
                 Id = b.Id.ToString(),
-                Name = b.BookName,
+                BookName = b.BookName,
                 Author = b.Author,
                 Category = b.Category,
                 Price = b.Price,
