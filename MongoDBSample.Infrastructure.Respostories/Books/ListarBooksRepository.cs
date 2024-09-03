@@ -25,7 +25,8 @@ namespace MongoDBSample.Infrastructure.Respostories.Books
                 Name = b.BookName,
                 Author = b.Author,
                 Category = b.Category,
-                Price = b.Price
+                Price = b.Price,
+                Date = b.Date
             }).ToList();
         }
 

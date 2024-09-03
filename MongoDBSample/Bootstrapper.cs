@@ -67,6 +67,17 @@ namespace MongoDBSample.API
 
         public static IServiceCollection AddCustomControllers(this IServiceCollection services)
         {
+            // Add CORS
+            services.AddCors(options =>
+            {
+                options.AddPolicy("AllowAll", builder =>
+                {
+                    builder.AllowAnyOrigin()
+                           .AllowAnyMethod()
+                           .AllowAnyHeader();
+                });
+            });
+
             services.AddControllers()
                 .AddJsonOptions(options => options.JsonSerializerOptions.PropertyNamingPolicy = null);
 
@@ -75,6 +86,7 @@ namespace MongoDBSample.API
 
         public static WebApplication UseCustomMiddleware(this WebApplication app)
         {
+            app.UseCors("AllowAll");
             app.UseMiddleware<ExceptionHandlingMiddleware>();
 
             if (app.Environment.IsDevelopment())
