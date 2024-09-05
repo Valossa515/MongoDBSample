@@ -60,7 +60,7 @@ namespace MongoDBSample.API
 
             //Repositories
             services.AddScoped<IRequestHandler<ListarBooksPorIdQuery, Response<BookResponse>>, ListarBooksPorIdRepository>();
-            services.AddScoped<IRequestHandler<ListarBooksQuery, Response<IEnumerable<BookResponse>>>, ListarBooksRepository>();
+            services.AddScoped<IRequestHandler<ListarBooksQuery, Response<PaginatedResponse<BookResponse>>>, ListarBooksRepository>();
 
             return services;
         }

@@ -10,15 +10,22 @@ namespace MongoDBSample.API.UnitTests.Application.Books.Queries
         {
             // Arrange
             string id = "1";
+            int page = 1;
+            int pageSize = 10;
+
 
             // Act
             ListarBooksQuery actual = new()
             {
-                Id = id
+                Id = id,
+                Page = page,
+                PageSize = pageSize
             };
 
             // Assert
             actual.Id.Should().Be(id);
+            actual.Page.Should().Be(page);
+            actual.PageSize.Should().Be(pageSize);
         }
     }
 }

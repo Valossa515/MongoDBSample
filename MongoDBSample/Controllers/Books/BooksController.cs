@@ -39,12 +39,24 @@ namespace MongoDBSample.API.Controllers.Books
         /// </summary>
         /// <returns>Lista de todos os books</returns>
         [HttpGet]
-        [ProducesResponseType(typeof(IEnumerable<BookResponse>), (int)ResponseStatus.Ok)]
-        public async Task<IActionResult> ListarTodosBooks()
+        [ProducesResponseType(typeof(PaginatedResponse<BookResponse>), (int)ResponseStatus.Ok)]
+        public async Task<IActionResult> ListarTodosBooks([FromQuery] int page = 1, [FromQuery] int pageSize = 10)
         {
-            ListarBooksQuery query = new();
-            Response<IEnumerable<BookResponse>> result = await mediator.Send(query);
-            return Ok(result);
+            // Cria a query passando os parâmetros de paginação
+            ListarBooksQuery query = new()
+            {
+                Page = page,
+                PageSize = pageSize
+            };
+
+            // Envia a query via MediatR
+            Response<PaginatedResponse<BookResponse>> result = await mediator.Send(query);
+
+            // Acessa o conteúdo da resposta
+            PaginatedResponse<BookResponse> paginatedResponse = result.Result;
+
+            // Retorna o resultado paginado
+            return Ok(paginatedResponse);
         }
 
         /// <summary>
