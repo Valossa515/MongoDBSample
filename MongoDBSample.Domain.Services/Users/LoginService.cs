@@ -53,8 +53,8 @@ public class LoginService
             DateTime expires = DateTime.UtcNow.AddMinutes(30);
 
             JwtSecurityToken token = new(
-               issuer: "https://localhost:5001",
-               audience: "https://localhost:5001",
+               issuer: "http://localhost:5124/",
+               audience: "http://localhost:5124/",
                claims: claims,
                expires: expires,
                signingCredentials: creds

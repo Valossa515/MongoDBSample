@@ -31,7 +31,8 @@ namespace MongoDBSample.Domain.Services.Users
                 ApplicationUser user = new()
                 {
                     UserName = request.Name,
-                    Email = request.Email
+                    Email = request.Email,
+                    ConcurrencyStamp = Guid.NewGuid().ToString(),
                 };
 
                 IdentityResult result = await userManager.CreateAsync(user, request.Password);
@@ -41,6 +42,15 @@ namespace MongoDBSample.Domain.Services.Users
                     // Capture os erros de identidade e retorne uma resposta adequada
                     string errorMessages = string.Join(", ", result.Errors.Select(e => e.Description));
                     return MapearResponse(false, $"Falha ao cadastrar o usuário: {errorMessages}");
+                }
+
+                IdentityResult addUserToRoleResult = await userManager.AddToRoleAsync(user, "USER");
+
+                if (!addUserToRoleResult.Succeeded)
+                {
+                    // Capture os erros de identidade e retorne uma resposta adequada
+                    string errorMessages = string.Join(", ", addUserToRoleResult.Errors.Select(e => e.Description));
+                    return MapearResponse(false, $"Falha ao adicionar o usuário ao grupo: {errorMessages}");
                 }
 
                 // Commit após criar o usuário

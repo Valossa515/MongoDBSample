@@ -101,8 +101,8 @@ namespace MongoDBSample.API
                     ValidateIssuer = true,
                     ValidateAudience = true,
                     ValidateLifetime = true,
-                    ValidIssuer = configuration["Jwt:Issuer"], // Ler do appsettings.json
-                    ValidAudience = configuration["Jwt:Audience"], // Ler do appsettings.json
+                    ValidIssuer = configuration["Jwt:Issuer"],
+                    ValidAudience = configuration["Jwt:Audience"],
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["Jwt:Key"])),
                     ClockSkew = TimeSpan.Zero
                 };
@@ -124,6 +124,7 @@ namespace MongoDBSample.API
                 });
             });
 
+
             services.AddControllers()
                 .AddJsonOptions(options => options.JsonSerializerOptions.PropertyNamingPolicy = null);
 
@@ -142,8 +143,13 @@ namespace MongoDBSample.API
             }
 
             app.UseHttpsRedirection();
+            app.UseStaticFiles();
+
+            app.UseRouting();
+
             app.UseAuthentication();
             app.UseAuthorization();
+
             app.MapControllers();
 
             return app;

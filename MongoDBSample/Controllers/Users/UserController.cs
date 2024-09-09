@@ -1,8 +1,10 @@
 ﻿using MediatR;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using MongoDBSample.Application.Abstractions.Data;
 using MongoDBSample.Application.Users.Commands;
 using MongoDBSample.Application.Users.Data;
+using MongoDBSample.Domain.Model.Users;
 
 namespace MongoDBSample.API.Controllers.Users
 {
@@ -12,12 +14,16 @@ namespace MongoDBSample.API.Controllers.Users
         : ControllerBase
     {
         private readonly IMediator mediator;
+        private readonly RoleManager<ApplicationRole> roleManager;
 
         public UserController(
-            IMediator mediator)
+            IMediator mediator,
+            RoleManager<ApplicationRole> roleManager)
         {
             this.mediator = mediator;
+            this.roleManager = roleManager;
         }
+
 
 
         [HttpPost]
@@ -54,6 +60,18 @@ namespace MongoDBSample.API.Controllers.Users
             Response<LoginResponse> result = await mediator.Send(loginCommand);
             return Ok(result);
         }
+
+        [HttpPost]
+        [Route("roles/add")]
+        public async Task<IActionResult> CreateRole([FromBody]
+            CreateRoleRequest request)
+        {
+            ApplicationRole appRole = new() { Name = request.Role };
+            IdentityResult createRole = await roleManager.CreateAsync(appRole);
+
+            return Ok(new { message = "role created succesfully" });
+        }
+
 
     }
 }

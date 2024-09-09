@@ -7,6 +7,7 @@ using MongoDBSample.Application.Books.Queries;
 
 namespace MongoDBSample.API.Controllers.Books
 {
+    //[Authorize(Roles = "USER")]
     [ApiController]
     [Route("books")]
     public class BooksController(
