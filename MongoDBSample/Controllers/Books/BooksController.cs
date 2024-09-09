@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MongoDBSample.Application.Abstractions.Data;
 using MongoDBSample.Application.Books.Commands;
@@ -7,7 +8,7 @@ using MongoDBSample.Application.Books.Queries;
 
 namespace MongoDBSample.API.Controllers.Books
 {
-    //[Authorize(Roles = "USER")]
+    [Authorize(Roles = "USER")]
     [ApiController]
     [Route("books")]
     public class BooksController(

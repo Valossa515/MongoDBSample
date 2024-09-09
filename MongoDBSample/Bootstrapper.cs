@@ -83,7 +83,9 @@ namespace MongoDBSample.API
             return services;
         }
 
-        public static IServiceCollection AddAuthenticationJwt(this IServiceCollection services, IConfiguration configuration)
+        public static IServiceCollection AddAuthenticationExtension(
+            this IServiceCollection services,
+            IConfiguration configuration)
         {
             // Adiciona o serviço de autenticação JWT
             services.AddAuthentication(options =>
@@ -120,7 +122,8 @@ namespace MongoDBSample.API
                 {
                     builder.AllowAnyOrigin()
                            .AllowAnyMethod()
-                           .AllowAnyHeader();
+                           .AllowAnyHeader()
+                           .WithExposedHeaders("Authorization");
                 });
             });
 
@@ -143,13 +146,6 @@ namespace MongoDBSample.API
             }
 
             app.UseHttpsRedirection();
-            app.UseStaticFiles();
-
-            app.UseRouting();
-
-            app.UseAuthentication();
-            app.UseAuthorization();
-
             app.MapControllers();
 
             return app;
