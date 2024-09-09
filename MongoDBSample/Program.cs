@@ -5,7 +5,9 @@ WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddApplicationValidators();
+builder.Services.AddAuthenticationJwt(builder.Configuration);
 builder.Services.AddMongoDBContext(builder.Configuration);
+builder.Services.AddControllersWithViews();
 builder.Services.AddMediatRServices();
 builder.Services.AddCustomControllers();
 builder.Services.AddEndpointsApiExplorer();
