@@ -54,7 +54,7 @@ public class LoginService
 
             JwtSecurityToken token = new(
                issuer: "http://localhost:5124/",
-               audience: "http://localhost:5124/",
+               audience: "http://localhost:3000/",
                claims: claims,
                expires: expires,
                signingCredentials: creds
