@@ -24,8 +24,8 @@ public class LoginService
     }
 
     protected override async Task<Response<LoginResponse>> Execute(
-        LoginCommand request,
-        CancellationToken cancellationToken)
+    LoginCommand request,
+    CancellationToken cancellationToken)
     {
         try
         {
@@ -36,13 +36,19 @@ public class LoginService
                 return MapearResponse(false, "Usuário não encontrado");
             }
 
-            List<Claim> claims = new()
+            bool passwordValid = await _userManager.CheckPasswordAsync(user, request.Password);
+            if (!passwordValid)
             {
-                new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
-                new Claim(ClaimTypes.Name, user.UserName),
-                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString())
-            };
+                return MapearResponse(false, "Senha incorreta");
+            }
+
+            List<Claim> claims = new()
+        {
+            new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
+            new Claim(ClaimTypes.Name, user.UserName),
+            new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+            new Claim(ClaimTypes.NameIdentifier, user.Id.ToString())
+        };
 
             IList<string> roles = await _userManager.GetRolesAsync(user);
             IEnumerable<Claim> roleClaims = roles.Select(x => new Claim(ClaimTypes.Role, x));
@@ -89,7 +95,7 @@ public class LoginService
             Token = token
         };
 
-        return Ok(response);
+        return sucesso ? Ok(response) : BadRequest("Erro na requisição");
     }
 
     private Response<LoginResponse> MapearResponse(
@@ -104,6 +110,6 @@ public class LoginService
             Success = sucesso
         };
 
-        return Ok(response);
+        return sucesso ? Ok(response) : BadRequest("Erro na requisição");
     }
 }
