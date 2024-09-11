@@ -33,13 +33,13 @@ public class LoginService
 
             if (user == null)
             {
-                return MapearResponse(false, "Usuário não encontrado");
+                return BadRequest("Usuário não encontrado");
             }
 
             bool passwordValid = await _userManager.CheckPasswordAsync(user, request.Password);
             if (!passwordValid)
             {
-                return MapearResponse(false, "Senha incorreta");
+                return BadRequest("Senha incorreta");
             }
 
             List<Claim> claims = new()
@@ -73,11 +73,11 @@ public class LoginService
         }
         catch (ArgumentOutOfRangeException ex)
         {
-            return MapearResponse(false, $"Erro de argumento fora do intervalo: {ex.Message}");
+            return BadRequest($"Erro de argumento fora do intervalo: {ex.Message}");
         }
         catch (Exception ex)
         {
-            return MapearResponse(false, $"Erro inesperado: {ex.Message}");
+            return BadRequest($"Erro inesperado: {ex.Message}");
         }
     }
 
@@ -95,7 +95,7 @@ public class LoginService
             Token = token
         };
 
-        return sucesso ? Ok(response) : BadRequest("Erro na requisição");
+        return Ok(response);
     }
 
     private Response<LoginResponse> MapearResponse(
@@ -110,6 +110,6 @@ public class LoginService
             Success = sucesso
         };
 
-        return sucesso ? Ok(response) : BadRequest("Erro na requisição");
+        return Ok(response);
     }
 }

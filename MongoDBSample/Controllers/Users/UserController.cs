@@ -59,7 +59,9 @@ namespace MongoDBSample.API.Controllers.Users
             };
 
             Response<LoginResponse> result = await mediator.Send(loginCommand);
-            return Ok(result);
+
+            return result.IsSuccess ? Ok(result) : BadRequest(result.Message);
+
         }
 
         [Authorize(Roles = "ADMIN")]
