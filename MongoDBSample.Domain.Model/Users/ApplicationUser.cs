@@ -7,5 +7,6 @@ namespace MongoDBSample.Domain.Model.Users
     public class ApplicationUser
         : MongoIdentityUser<Guid>
     {
+
     }
 }

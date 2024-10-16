@@ -10,16 +10,22 @@ using MongoDBSample.Application.Abstractions.Handlers;
 using MongoDBSample.Application.Books.Commands;
 using MongoDBSample.Application.Books.Data;
 using MongoDBSample.Application.Books.Queries;
+using MongoDBSample.Application.Reservations.Commands;
+using MongoDBSample.Application.Reservations.Data;
+using MongoDBSample.Application.Reservations.Queries;
 using MongoDBSample.Application.Users.Commands;
 using MongoDBSample.Application.Users.Data;
 using MongoDBSample.Domain.Model.Books;
+using MongoDBSample.Domain.Model.Reservations;
 using MongoDBSample.Domain.Model.UnitOfWork;
 using MongoDBSample.Domain.Model.Users;
 using MongoDBSample.Domain.Services.Books;
+using MongoDBSample.Domain.Services.Reservations;
 using MongoDBSample.Domain.Services.Users;
 using MongoDBSample.Infrastructure.Respositories.Books;
 using MongoDBSample.Infrastructure.Respostories.Books;
 using MongoDBSample.Infrastructure.Respostories.Context;
+using MongoDBSample.Infrastructure.Respostories.Reservations;
 using System.Reflection;
 using System.Text;
 
@@ -44,6 +50,14 @@ namespace MongoDBSample.API
                 return context.GetCollection<Book>("BooksCollectionName");
             });
 
+            // Register IMongoCollection<Reservation>
+            services.AddSingleton(provider =>
+            {
+                MongoDBContext context = provider.GetRequiredService<MongoDBContext>();
+                return context.GetCollection<Reservation>("ReservationsCollectionName");
+            });
+
+
             services.AddScoped<IUnitOfWork>(provider => provider.GetRequiredService<MongoDBContext>());
 
             MongoDbConfig? identitySettings = configuration.GetSection("MongoDbConfig").Get<MongoDbConfig>();
@@ -61,9 +75,12 @@ namespace MongoDBSample.API
             services.AddMediatR(cfg =>
             {
                 cfg.RegisterServicesFromAssembly(typeof(CommandHandler<CadastrarBookCommand, CadastrarBookResponse>).Assembly);
+                cfg.RegisterServicesFromAssembly(typeof(CommandHandler<CadastrarReservationCommand, CadastrarReservationResponse>).Assembly);
                 cfg.RegisterServicesFromAssembly(typeof(QueryHandler<,>).Assembly);
                 cfg.RegisterServicesFromAssembly(typeof(ListarBooksPorIdRepository).Assembly);
                 cfg.RegisterServicesFromAssembly(typeof(ListarBooksRepository).Assembly);
+                cfg.RegisterServicesFromAssembly(typeof(ListarReservaPorIdRepository).Assembly);
+                cfg.RegisterServicesFromAssembly(typeof(ListarReservaRepository).Assembly);
                 cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly());
             });
 
@@ -72,6 +89,8 @@ namespace MongoDBSample.API
             //Services
             services.AddScoped<IRequestHandler<CadastrarBookCommand, Response<CadastrarBookResponse>>, CadastrarBookService>();
             services.AddScoped<IRequestHandler<AtualizarBookCommand, Response<CadastrarBookResponse>>, AtualizarBookService>();
+            services.AddScoped<IRequestHandler<AtualizarReservationCommand, Response<CadastrarReservationResponse>>, AtualizarReservationService>();
+            services.AddScoped<IRequestHandler<CadastrarReservationCommand, Response<CadastrarReservationResponse>>, CadastrarReservationService>();
             services.AddScoped<IRequestHandler<RemoverBookCommand, Response<CadastrarBookResponse>>, RemoverBookService>();
             services.AddScoped<IRequestHandler<CadastrarUserCommand, Response<CadastrarUserResponse>>, CadastrarUserService>();
             services.AddScoped<IRequestHandler<LoginCommand, Response<LoginResponse>>, LoginService>();
@@ -79,6 +98,8 @@ namespace MongoDBSample.API
             //Repositories
             services.AddScoped<IRequestHandler<ListarBooksPorIdQuery, Response<BookResponse>>, ListarBooksPorIdRepository>();
             services.AddScoped<IRequestHandler<ListarBooksQuery, Response<PaginatedResponse<BookResponse>>>, ListarBooksRepository>();
+            services.AddScoped<IRequestHandler<ListarReservaPorIdQuery, Response<ListarReservaResponse>>, ListarReservaPorIdRepository>();
+            services.AddScoped<IRequestHandler<ListarReservaQuery, Response<PaginatedResponse<ListarReservaResponse>>>, ListarReservaRepository>();
 
             return services;
         }
@@ -118,15 +139,16 @@ namespace MongoDBSample.API
             // Add CORS
             services.AddCors(options =>
             {
-                options.AddPolicy("AllowAll", builder =>
+                options.AddPolicy("AllowSpecificOrigin", builder =>
                 {
-                    builder.AllowAnyOrigin()
+                    builder
+                           .WithOrigins("https://mongodbsamplefront.vercel.app")
+                           .AllowAnyOrigin()
                            .AllowAnyMethod()
                            .AllowAnyHeader()
                            .WithExposedHeaders("Authorization");
                 });
             });
-
 
             services.AddControllers()
                 .AddJsonOptions(options => options.JsonSerializerOptions.PropertyNamingPolicy = null);
@@ -136,7 +158,7 @@ namespace MongoDBSample.API
 
         public static WebApplication UseCustomMiddleware(this WebApplication app)
         {
-            app.UseCors("AllowAll");
+            app.UseCors("AllowSpecificOrigin");
             app.UseMiddleware<ExceptionHandlingMiddleware>();
 
             if (app.Environment.IsDevelopment())

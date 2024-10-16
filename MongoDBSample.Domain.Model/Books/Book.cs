@@ -34,5 +34,10 @@ namespace MongoDBSample.Domain.Model.Books
             Author = author;
             Date = date;
         }
+
+        public static implicit operator string?(Book? v)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

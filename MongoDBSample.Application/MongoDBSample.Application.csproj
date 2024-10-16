@@ -18,4 +18,8 @@
     <ProjectReference Include="..\MongoDBSample.Domain.Model\MongoDBSample.Domain.Model.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Reservations\Validators\" />
+  </ItemGroup>
+
 </Project>

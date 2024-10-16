@@ -42,13 +42,13 @@ public class LoginService
                 return BadRequest("Senha incorreta");
             }
 
-            List<Claim> claims = new()
-        {
-            new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
-            new Claim(ClaimTypes.Name, user.UserName),
-            new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-            new Claim(ClaimTypes.NameIdentifier, user.Id.ToString())
-        };
+            List<Claim> claims =
+            [
+                new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
+                new Claim(ClaimTypes.Name, user.UserName),
+                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString())
+            ];
 
             IList<string> roles = await _userManager.GetRolesAsync(user);
             IEnumerable<Claim> roleClaims = roles.Select(x => new Claim(ClaimTypes.Role, x));
@@ -85,7 +85,7 @@ public class LoginService
         bool sucesso,
         string mensagem,
         Guid? id = null,
-        string token = null)
+        string? token = null)
     {
         LoginResponse response = new()
         {

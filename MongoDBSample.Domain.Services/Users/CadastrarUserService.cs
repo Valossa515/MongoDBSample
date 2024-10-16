@@ -23,8 +23,8 @@ namespace MongoDBSample.Domain.Services.Users
         }
 
         protected override async Task<Response<CadastrarUserResponse>> Execute(
-            CadastrarUserCommand request,
-            CancellationToken cancellationToken)
+             CadastrarUserCommand request,
+             CancellationToken cancellationToken)
         {
             try
             {
@@ -39,21 +39,20 @@ namespace MongoDBSample.Domain.Services.Users
 
                 if (!result.Succeeded)
                 {
-                    // Capture os erros de identidade e retorne uma resposta adequada
                     string errorMessages = string.Join(", ", result.Errors.Select(e => e.Description));
                     return MapearResponse(false, $"Falha ao cadastrar o usuário: {errorMessages}");
                 }
 
-                IdentityResult addUserToRoleResult = await userManager.AddToRoleAsync(user, "USER");
+                List<string> rolesParaAtribuir = DeterminarRolesParaUsuario(user);
 
-                if (!addUserToRoleResult.Succeeded)
+                IdentityResult addUserToRolesResult = await userManager.AddToRolesAsync(user, rolesParaAtribuir);
+
+                if (!addUserToRolesResult.Succeeded)
                 {
-                    // Capture os erros de identidade e retorne uma resposta adequada
-                    string errorMessages = string.Join(", ", addUserToRoleResult.Errors.Select(e => e.Description));
-                    return MapearResponse(false, $"Falha ao adicionar o usuário ao grupo: {errorMessages}");
+                    string errorMessages = string.Join(", ", addUserToRolesResult.Errors.Select(e => e.Description));
+                    return MapearResponse(false, $"Falha ao adicionar o usuário aos grupos: {errorMessages}");
                 }
 
-                // Commit após criar o usuário
                 await unitOfWork.AddAsync(result);
                 StatusCommit commitStatus = await unitOfWork.Commit(cancellationToken);
 
@@ -68,9 +67,22 @@ namespace MongoDBSample.Domain.Services.Users
             }
             catch (Exception ex)
             {
-                // Capture qualquer exceção inesperada
                 return MapearResponse(false, $"Erro inesperado: {ex.Message}");
             }
+        }
+
+        private List<string> DeterminarRolesParaUsuario(ApplicationUser user)
+        {
+            List<string> roles = new();
+
+            if (user.Email.EndsWith("@empresa.com"))
+            {
+                roles.Add("ADMIN");
+            }
+
+            roles.Add("USER");
+
+            return roles;
         }
 
         private Response<CadastrarUserResponse> MapearResponse(

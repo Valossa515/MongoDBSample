@@ -22,6 +22,7 @@ namespace MongoDBSample.Infrastructure.Respostories.Context
 
         public IMongoCollection<T> GetCollection<T>(string name) =>
           _database.GetCollection<T>(name);
+
         public async Task AddAsync<T>(T entity)
         {
             IMongoCollection<T> collection = GetCollection<T>(typeof(T).Name);
