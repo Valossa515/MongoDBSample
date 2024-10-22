@@ -23,6 +23,13 @@ namespace MongoDBSample.Infrastructure.Respostories.Context
         public IMongoCollection<T> GetCollection<T>(string name) =>
           _database.GetCollection<T>(name);
 
+        public IMongoCollection<T> GetCollection<T>(string collectionName, string databaseName)
+        {
+            MongoClient client = new(_database.Client.Settings);
+            IMongoDatabase db = client.GetDatabase(databaseName);
+            return db.GetCollection<T>(collectionName);
+        }
+
         public async Task AddAsync<T>(T entity)
         {
             IMongoCollection<T> collection = GetCollection<T>(typeof(T).Name);
@@ -112,6 +119,11 @@ namespace MongoDBSample.Infrastructure.Respostories.Context
             IMongoCollection<T> collection = GetRepository<T>();
             FilterDefinition<T> filter = Builders<T>.Filter.Eq("Id", id);
             return await collection.Find(filter).FirstOrDefaultAsync();
+        }
+
+        public IMongoDatabase GetDatabase()
+        {
+            return _database;
         }
     }
 }

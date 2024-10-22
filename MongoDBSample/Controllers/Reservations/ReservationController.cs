@@ -22,18 +22,19 @@ namespace MongoDBSample.API.Controllers.Reservations
             this.mediator = mediator;
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("search")]
         [ProducesResponseType(typeof(ListarReservaResponse), (int)ResponseStatus.Ok)]
         public async Task<IActionResult> Listar(
-            [FromRoute] string? id)
+            [FromQuery] string? id,
+            [FromQuery] string? userName)
         {
             ListarReservaPorIdQuery query = new()
             {
-                Id = id
+                Id = id,
+                UserName = userName
             };
 
             Response<ListarReservaResponse> result = await mediator.Send(query);
-
             return Ok(result);
         }
 

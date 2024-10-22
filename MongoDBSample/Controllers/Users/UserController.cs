@@ -74,7 +74,5 @@ namespace MongoDBSample.API.Controllers.Users
 
             return Ok(new { message = "role created succesfully" });
         }
-
-
     }
 }

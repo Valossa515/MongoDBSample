@@ -48,22 +48,28 @@ namespace MongoDBSample.Infrastructure.Respostories.Reservations
             ListarReservaPorIdQuery request,
             CancellationToken cancellationToken)
         {
-            if (string.IsNullOrEmpty(request.Id))
+            if (string.IsNullOrEmpty(request.Id) && string.IsNullOrEmpty(request.UserName))
             {
                 return null;
             }
 
-            if (ObjectId.TryParse(request.Id, out ObjectId objectId))
+            FilterDefinition<Reservation> filter;
+            if (!string.IsNullOrEmpty(request.Id) && ObjectId.TryParse(request.Id, out ObjectId objectId))
             {
-                FilterDefinition<Reservation> filter = Builders<Reservation>.Filter.Eq("_id", objectId);
-                IMongoCollection<Reservation> collection = context.GetCollection<Reservation>("Reservation");
-
-                return await collection.Find(filter).FirstOrDefaultAsync(cancellationToken);
+                filter = Builders<Reservation>.Filter.Eq("_id", objectId);
+            }
+            else if (!string.IsNullOrEmpty(request.UserName))
+            {
+                filter = Builders<Reservation>.Filter.Eq("UserName", request.UserName);
+            }
+            else
+            {
+                return null;
             }
 
-            return null;
+            IMongoCollection<Reservation> collection = context.GetCollection<Reservation>("Reservation");
+            return await collection.Find(filter).FirstOrDefaultAsync(cancellationToken);
         }
-
 
         private async Task<List<BookResponse>> BuscarLivrosPorIdsAsync(
             IEnumerable<string> bookIds,

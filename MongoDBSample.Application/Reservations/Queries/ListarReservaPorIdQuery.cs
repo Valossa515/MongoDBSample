@@ -7,5 +7,6 @@ namespace MongoDBSample.Application.Reservations.Queries
         : IQuery<ListarReservaResponse>
     {
         public string? Id { get; set; }
+        public string? UserName { get; set; }
     }
 }
