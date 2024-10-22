@@ -9,48 +9,48 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 
-public class LoginService
-    : CommandHandler<LoginCommand, LoginResponse>
+public class LoginService(
+    UserManager<ApplicationUser> userManager)
+        : CommandHandler<LoginCommand, LoginResponse>
 {
-    private readonly UserManager<ApplicationUser> _userManager;
-    private readonly RoleManager<ApplicationRole> _roleManager;
-
-    public LoginService(
-        UserManager<ApplicationUser> userManager,
-        RoleManager<ApplicationRole> roleManager)
-    {
-        _userManager = userManager;
-        _roleManager = roleManager;
-    }
-
     protected override async Task<Response<LoginResponse>> Execute(
-    LoginCommand request,
-    CancellationToken cancellationToken)
+        LoginCommand request,
+        CancellationToken cancellationToken)
     {
         try
         {
-            ApplicationUser? user = await _userManager.FindByEmailAsync(request.Email);
+            if (string.IsNullOrEmpty(request.Email))
+            {
+                return BadRequest("Email não pode ser nulo ou vazio");
+            }
+
+            if (string.IsNullOrEmpty(request.Password))
+            {
+                return BadRequest("Senha não pode ser nula ou vazia");
+            }
+
+            ApplicationUser? user = await userManager.FindByEmailAsync(request.Email);
 
             if (user == null)
             {
                 return BadRequest("Usuário não encontrado");
             }
 
-            bool passwordValid = await _userManager.CheckPasswordAsync(user, request.Password);
+            bool passwordValid = await userManager.CheckPasswordAsync(user, request.Password);
             if (!passwordValid)
             {
                 return BadRequest("Senha incorreta");
             }
 
-            List<Claim> claims =
-            [
+            List<Claim> claims = new()
+            {
                 new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
-                new Claim(ClaimTypes.Name, user.UserName),
+                new Claim(ClaimTypes.Name, user.UserName ?? string.Empty),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                 new Claim(ClaimTypes.NameIdentifier, user.Id.ToString())
-            ];
+            };
 
-            IList<string> roles = await _userManager.GetRolesAsync(user);
+            IList<string> roles = await userManager.GetRolesAsync(user);
             IEnumerable<Claim> roleClaims = roles.Select(x => new Claim(ClaimTypes.Role, x));
             claims.AddRange(roleClaims);
 

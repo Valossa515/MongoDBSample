@@ -33,7 +33,6 @@ namespace MongoDBSample.Domain.Services.Books
                 Date = request.Date
             };
 
-            // Use the generic AddAsync method here
             await unitOfWork.AddAsync(book);
 
             StatusCommit commitStatus = await unitOfWork.Commit(cancellationToken);

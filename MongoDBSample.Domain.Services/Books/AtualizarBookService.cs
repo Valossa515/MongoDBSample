@@ -24,7 +24,7 @@ namespace MongoDBSample.Domain.Services.Books
             AtualizarBookCommand request,
             CancellationToken cancellationToken)
         {
-            Book? book = await unitOfWork.FindByIdAsync<Book>(request.Id);
+            Book? book = await unitOfWork.FindByIdAsync<Book>(request.Id!);
 
             if (book == null)
             {

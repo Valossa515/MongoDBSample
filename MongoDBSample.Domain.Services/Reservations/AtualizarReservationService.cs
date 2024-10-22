@@ -7,17 +7,10 @@ using MongoDBSample.Domain.Model.UnitOfWork;
 
 namespace MongoDBSample.Domain.Services.Reservations
 {
-    public class AtualizarReservationService
-        : CommandHandler<AtualizarReservationCommand, CadastrarReservationResponse>
+    public class AtualizarReservationService(
+        IUnitOfWork unitOfWork)
+                : CommandHandler<AtualizarReservationCommand, CadastrarReservationResponse>
     {
-        private readonly IUnitOfWork unitOfWork;
-
-        public AtualizarReservationService(
-            IUnitOfWork unitOfWork)
-        {
-            this.unitOfWork = unitOfWork;
-        }
-
         public async Task<Response<CadastrarReservationResponse>> PublicExecute(
             AtualizarReservationCommand request,
             CancellationToken cancellationToken)
@@ -29,6 +22,11 @@ namespace MongoDBSample.Domain.Services.Reservations
             AtualizarReservationCommand request,
             CancellationToken cancellationToken)
         {
+            if (string.IsNullOrEmpty(request.Id))
+            {
+                return MapearResponse(false, "ID da reserva não pode ser nulo ou vazio");
+            }
+
             Reservation? reservation = await unitOfWork.FindByIdAsync<Reservation>(request.Id);
 
             if (reservation == null)

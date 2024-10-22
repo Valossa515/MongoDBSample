@@ -6,7 +6,7 @@ namespace MongoDBSample.Application.Users.Commands
     public class LoginCommand
         : ICommand<LoginResponse>
     {
-        public string Email { get; set; }
-        public string Password { get; set; }
+        public string? Email { get; set; }
+        public string? Password { get; set; }
     }
 }

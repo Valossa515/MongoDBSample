@@ -26,6 +26,11 @@ namespace MongoDBSample.Domain.Services.Books
         {
             string? bookId = request.Id;
 
+            if (string.IsNullOrEmpty(bookId))
+            {
+                return MapearResponse(false, "Book ID não fornecido");
+            }
+
             Book? book = await unitOfWork.FindByIdAsync<Book>(bookId);
 
             if (book == null)

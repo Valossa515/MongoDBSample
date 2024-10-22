@@ -8,24 +8,20 @@ using MongoDBSample.Domain.Model.Users;
 
 namespace MongoDBSample.Domain.Services.Users
 {
-    public class CadastrarUserService
-        : CommandHandler<CadastrarUserCommand, CadastrarUserResponse>
+    public class CadastrarUserService(
+        IUnitOfWork unitOfWork,
+        UserManager<ApplicationUser> userManager)
+                : CommandHandler<CadastrarUserCommand, CadastrarUserResponse>
     {
-        private readonly IUnitOfWork unitOfWork;
-        private readonly UserManager<ApplicationUser> userManager;
-
-        public CadastrarUserService(
-            IUnitOfWork unitOfWork,
-            UserManager<ApplicationUser> userManager)
-        {
-            this.unitOfWork = unitOfWork;
-            this.userManager = userManager;
-        }
-
         protected override async Task<Response<CadastrarUserResponse>> Execute(
-             CadastrarUserCommand request,
-             CancellationToken cancellationToken)
+            CadastrarUserCommand request,
+            CancellationToken cancellationToken)
         {
+            if (string.IsNullOrEmpty(request.Password))
+            {
+                return MapearResponse(false, "Password cannot be null or empty");
+            }
+
             try
             {
                 ApplicationUser user = new()
@@ -71,11 +67,11 @@ namespace MongoDBSample.Domain.Services.Users
             }
         }
 
-        private List<string> DeterminarRolesParaUsuario(ApplicationUser user)
+        private static List<string> DeterminarRolesParaUsuario(ApplicationUser user)
         {
-            List<string> roles = new();
+            List<string> roles = [];
 
-            if (user.Email.EndsWith("@empresa.com"))
+            if (user.Email?.EndsWith("@empresa.com") == true)
             {
                 roles.Add("ADMIN");
             }

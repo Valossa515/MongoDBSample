@@ -32,7 +32,7 @@ namespace MongoDBSample.Infrastructure.Respositories.Books
 
             return new BookResponse
             {
-                Id = book.Id.ToString(),
+                Id = book.Id ?? string.Empty.ToString(),
                 BookName = book.BookName,
                 Author = book.Author,
                 Category = book.Category,

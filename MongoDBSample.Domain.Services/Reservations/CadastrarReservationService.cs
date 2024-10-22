@@ -11,20 +11,11 @@ using MongoDBSample.Domain.Model.Users;
 
 namespace MongoDBSample.Domain.Services.Reservations
 {
-    public class CadastrarReservationService
-        : CommandHandler<CadastrarReservationCommand, CadastrarReservationResponse>
+    public class CadastrarReservationService(
+        IUnitOfWork unitOfWork,
+        UserManager<ApplicationUser> userManager)
+                : CommandHandler<CadastrarReservationCommand, CadastrarReservationResponse>
     {
-        private readonly IUnitOfWork unitOfWork;
-        private readonly UserManager<ApplicationUser> _userManager;
-
-        public CadastrarReservationService(
-            IUnitOfWork unitOfWork,
-            UserManager<ApplicationUser> userManager)
-        {
-            this.unitOfWork = unitOfWork;
-            _userManager = userManager;
-        }
-
         public async Task<Response<CadastrarReservationResponse>> PublicExecute(
             CadastrarReservationCommand request,
             CancellationToken cancellationToken)
@@ -33,7 +24,7 @@ namespace MongoDBSample.Domain.Services.Reservations
         }
 
         protected async override Task<Response<CadastrarReservationResponse>> Execute(
-     CadastrarReservationCommand request, CancellationToken cancellationToken)
+            CadastrarReservationCommand request, CancellationToken cancellationToken)
         {
             foreach (string bookId in request.BookIds)
             {
@@ -44,7 +35,7 @@ namespace MongoDBSample.Domain.Services.Reservations
                 }
             }
 
-            ApplicationUser? user = await _userManager.FindByIdAsync(request.UserId);
+            ApplicationUser? user = await userManager.FindByIdAsync(request.UserId);
 
             if (user == null)
             {

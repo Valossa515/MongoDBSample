@@ -8,8 +8,8 @@ using MongoDBSample.Infrastructure.Respostories.Context;
 namespace MongoDBSample.Infrastructure.Respostories.Books
 {
     public class ListarBooksRepository(
-        MongoDBContext context)
-        : QueryHandler<ListarBooksQuery, PaginatedResponse<BookResponse>>
+           MongoDBContext context)
+           : QueryHandler<ListarBooksQuery, PaginatedResponse<BookResponse>>
     {
         private readonly MongoDBContext context = context;
 
@@ -19,10 +19,10 @@ namespace MongoDBSample.Infrastructure.Respostories.Books
         {
             IMongoCollection<Book> collection = context.GetCollection<Book>("Book");
 
-            // Calcular o número total de documentos
+            // Calcular o número total de documentos  
             long totalCount = await collection.CountDocumentsAsync(FilterDefinition<Book>.Empty, cancellationToken: cancellationToken);
 
-            // Pular documentos conforme a página atual e tamanho da página
+            // Pular documentos conforme a página atual e tamanho da página  
             List<Book> books = await collection.Find(FilterDefinition<Book>.Empty)
                 .Skip((request.Page - 1) * request.PageSize)
                 .Limit(request.PageSize)
@@ -30,9 +30,9 @@ namespace MongoDBSample.Infrastructure.Respostories.Books
 
             PaginatedResponse<BookResponse> paginatedResponse = new()
             {
-                Data = books.Select(b => new BookResponse
+                Data = books.Select(static b => new BookResponse
                 {
-                    Id = b.Id.ToString(),
+                    Id = b.Id?.ToString(),
                     BookName = b.BookName,
                     Author = b.Author,
                     Category = b.Category,
