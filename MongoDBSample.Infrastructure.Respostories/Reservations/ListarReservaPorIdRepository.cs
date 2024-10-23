@@ -11,7 +11,7 @@ using MongoDBSample.Infrastructure.Respostories.Context;
 namespace MongoDBSample.Infrastructure.Respostories.Reservations
 {
     public class ListarReservaPorIdRepository
-        : QueryHandler<ListarReservaPorIdQuery, ListarReservaResponse>
+        : QueryHandler<ListarReservaPorIdQuery, IEnumerable<ListarReservaResponse>>
     {
         private readonly MongoDBContext context;
 
@@ -20,31 +20,41 @@ namespace MongoDBSample.Infrastructure.Respostories.Reservations
             this.context = context;
         }
 
-        protected async override Task<ListarReservaResponse> Execute(
+        protected async override Task<IEnumerable<ListarReservaResponse>> Execute(
             ListarReservaPorIdQuery request,
             CancellationToken cancellationToken)
         {
-            Reservation reservation = await ListarReservaPorIdAsync(request, cancellationToken);
+            IEnumerable<Reservation> reservations = await ListarReservaPorIdAsync(request, cancellationToken);
 
-            if (reservation == null)
+            if (reservations == null || !reservations.Any())
             {
-                return null;
+                return new List<ListarReservaResponse>();
             }
 
-            List<BookResponse> books = await BuscarLivrosPorIdsAsync(reservation.BookIds, cancellationToken);
+            List<ListarReservaResponse> responseList = new();
 
-            return new ListarReservaResponse
+            foreach (Reservation reservation in reservations)
             {
-                Id = reservation.Id.ToString(),
-                UserId = reservation.UserId.ToString(),
-                Books = books,
-                UserName = reservation.UserName,
-                ReservationDate = reservation.ReservationDate,
-                ReturnDate = reservation.ReturnDate
-            };
+                List<BookResponse> books = await BuscarLivrosPorIdsAsync(reservation.BookIds, cancellationToken);
+
+                ListarReservaResponse response = new()
+                {
+                    Id = reservation.Id.ToString(),
+                    UserId = reservation.UserId.ToString(),
+                    Books = books,
+                    UserName = reservation.UserName,
+                    ReservationDate = reservation.ReservationDate,
+                    ReturnDate = reservation.ReturnDate,
+                    Status = reservation.Status
+                };
+
+                responseList.Add(response);
+            }
+
+            return responseList;
         }
 
-        private async Task<Reservation> ListarReservaPorIdAsync(
+        private async Task<List<Reservation>> ListarReservaPorIdAsync(
             ListarReservaPorIdQuery request,
             CancellationToken cancellationToken)
         {
@@ -68,7 +78,10 @@ namespace MongoDBSample.Infrastructure.Respostories.Reservations
             }
 
             IMongoCollection<Reservation> collection = context.GetCollection<Reservation>("Reservation");
-            return await collection.Find(filter).FirstOrDefaultAsync(cancellationToken);
+
+            List<Reservation> reservations = await collection.Find(filter).ToListAsync(cancellationToken);
+
+            return reservations;
         }
 
         private async Task<List<BookResponse>> BuscarLivrosPorIdsAsync(
@@ -95,5 +108,7 @@ namespace MongoDBSample.Infrastructure.Respostories.Reservations
                 Date = book.Date
             }).ToList();
         }
+
+
     }
 }

@@ -23,7 +23,7 @@ namespace MongoDBSample.API.Controllers.Reservations
         }
 
         [HttpGet("search")]
-        [ProducesResponseType(typeof(ListarReservaResponse), (int)ResponseStatus.Ok)]
+        [ProducesResponseType(typeof(IEnumerable<ListarReservaResponse>), (int)ResponseStatus.Ok)]
         public async Task<IActionResult> Listar(
             [FromQuery] string? id,
             [FromQuery] string? userName)
@@ -34,7 +34,7 @@ namespace MongoDBSample.API.Controllers.Reservations
                 UserName = userName
             };
 
-            Response<ListarReservaResponse> result = await mediator.Send(query);
+            Response<IEnumerable<ListarReservaResponse>> result = await mediator.Send(query);
             return Ok(result);
         }
 

@@ -94,11 +94,12 @@ namespace MongoDBSample.API
             services.AddScoped<IRequestHandler<RemoverBookCommand, Response<CadastrarBookResponse>>, RemoverBookService>();
             services.AddScoped<IRequestHandler<CadastrarUserCommand, Response<CadastrarUserResponse>>, CadastrarUserService>();
             services.AddScoped<IRequestHandler<LoginCommand, Response<LoginResponse>>, LoginService>();
+            services.AddScoped<IRequestHandler<ListarReservaPorIdQuery, Response<IEnumerable<ListarReservaResponse>>>, ListarReservaPorIdRepository>();
 
             //Repositories
             services.AddScoped<IRequestHandler<ListarBooksPorIdQuery, Response<BookResponse>>, ListarBooksPorIdRepository>();
             services.AddScoped<IRequestHandler<ListarBooksQuery, Response<PaginatedResponse<BookResponse>>>, ListarBooksRepository>();
-            services.AddScoped<IRequestHandler<ListarReservaPorIdQuery, Response<ListarReservaResponse>>, ListarReservaPorIdRepository>();
+            services.AddScoped<IRequestHandler<ListarReservaPorIdQuery, Response<IEnumerable<ListarReservaResponse>>>, ListarReservaPorIdRepository>();
             services.AddScoped<IRequestHandler<ListarReservaQuery, Response<PaginatedResponse<ListarReservaResponse>>>, ListarReservaRepository>();
 
             return services;

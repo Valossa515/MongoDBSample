@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using MongoDBSample.Application.Abstractions.Data;
@@ -63,7 +64,7 @@ namespace MongoDBSample.API.Controllers.Users
 
         }
 
-        //[Authorize(Roles = "ADMIN")]
+        [Authorize(Roles = "ADMIN")]
         [HttpPost]
         [Route("roles/add")]
         public async Task<IActionResult> CreateRole([FromBody]

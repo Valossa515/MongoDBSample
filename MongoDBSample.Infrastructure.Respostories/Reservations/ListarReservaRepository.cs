@@ -44,7 +44,8 @@ namespace MongoDBSample.Infrastructure.Respostories.Reservations
                     Books = r.BookIds.Select(bookId => allBooks.FirstOrDefault(b => b.Id == bookId)).ToList(),
                     UserName = r.UserName,
                     ReservationDate = r.ReservationDate,
-                    ReturnDate = r.ReturnDate
+                    ReturnDate = r.ReturnDate,
+                    Status = r.Status
                 }).ToList(),
                 TotalCount = (int)totalCount,
                 Page = request.Page,
