@@ -7,6 +7,7 @@ namespace MongoDBSample.API.Controllers.Reservations.enums
     {
         Active,
         Completed,
-        Canceled
+        Canceled,
+        Expired
     }
 }

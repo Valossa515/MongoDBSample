@@ -5,6 +5,7 @@ using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using MongoDBSample.API.Behaviors;
 using MongoDBSample.API.Exceptions;
+using MongoDBSample.API.Jobs.Reservations;
 using MongoDBSample.Application.Abstractions.Data;
 using MongoDBSample.Application.Abstractions.Handlers;
 using MongoDBSample.Application.Books.Commands;
@@ -57,7 +58,6 @@ namespace MongoDBSample.API
                 return context.GetCollection<Reservation>("ReservationsCollectionName");
             });
 
-
             services.AddScoped<IUnitOfWork>(provider => provider.GetRequiredService<MongoDBContext>());
 
             MongoDbConfig? identitySettings = configuration.GetSection("MongoDbConfig").Get<MongoDbConfig>();
@@ -102,6 +102,13 @@ namespace MongoDBSample.API
             services.AddScoped<IRequestHandler<ListarReservaPorIdQuery, Response<IEnumerable<ListarReservaResponse>>>, ListarReservaPorIdRepository>();
             services.AddScoped<IRequestHandler<ListarReservaQuery, Response<PaginatedResponse<ListarReservaResponse>>>, ListarReservaRepository>();
 
+            return services;
+        }
+
+        public static IServiceCollection AddHostedJobs(
+            this IServiceCollection services)
+        {
+            services.AddHostedService<AtualizarStatusReservaJob>();
             return services;
         }
 

@@ -25,8 +25,6 @@ namespace MongoDBSample.API.Controllers.Users
             this.roleManager = roleManager;
         }
 
-
-
         [HttpPost]
         [Route("register")]
         [ProducesResponseType(typeof(Response), (int)ResponseStatus.Ok)]

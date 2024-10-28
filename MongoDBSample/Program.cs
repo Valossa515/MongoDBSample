@@ -12,6 +12,8 @@ builder.Services.AddMediatRServices();
 builder.Services.AddCustomControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddAuthenticationExtension(builder.Configuration);
+builder.Logging.AddFile("Logs/log.txt");
+builder.Services.AddHostedJobs();
 builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new OpenApiInfo { Title = "MongoDBSample API", Version = "v1" });
