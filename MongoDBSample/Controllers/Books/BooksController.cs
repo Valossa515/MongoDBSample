@@ -66,6 +66,7 @@ namespace MongoDBSample.API.Controllers.Books
         /// </summary>
         /// <param name="request">Request</param>
         /// <returns></returns>
+        [Authorize(Roles = "ADMIN")]
         [HttpPost("cadastro")]
         [ProducesResponseType(typeof(Response), (int)ResponseStatus.Ok)]
         [ProducesResponseType(typeof(Response), (int)ResponseStatus.BadRequest)]

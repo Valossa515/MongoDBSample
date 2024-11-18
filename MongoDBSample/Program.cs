@@ -18,7 +18,6 @@ builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new OpenApiInfo { Title = "MongoDBSample API", Version = "v1" });
 
-    // Define o esquema de segurança
     c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
         Description = "JWT Authorization header using the Bearer scheme.",
@@ -28,7 +27,6 @@ builder.Services.AddSwaggerGen(c =>
         Scheme = "bearer"
     });
 
-    // Requer o esquema de segurança para todas as operações
     c.AddSecurityRequirement(new OpenApiSecurityRequirement
      {
                 {
@@ -47,7 +45,6 @@ builder.Services.AddSwaggerGen(c =>
 
 WebApplication app = builder.Build();
 
-// Configure the HTTP request pipeline.
 app.UseCustomMiddleware();
 app.UseAuthentication();
 app.UseAuthorization();
